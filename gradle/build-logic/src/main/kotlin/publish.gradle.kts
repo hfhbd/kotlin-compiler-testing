@@ -41,6 +41,14 @@ publishing {
     }
 }
 
+signing {
+    val signingKey = providers.gradleProperty("signingKey")
+    if (signingKey.isPresent) {
+        useInMemoryPgpKeys(signingKey.get(), providers.gradleProperty("signingPassword").get())
+        sign(publishing.publications)
+    }
+}
+
 tasks.withType<AbstractArchiveTask>().configureEach {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
