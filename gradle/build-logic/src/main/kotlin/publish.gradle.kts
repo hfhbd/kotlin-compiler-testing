@@ -5,12 +5,6 @@ plugins {
 }
 
 publishing {
-    repositories {
-        maven(url = "https://maven.pkg.github.com/hfhbd/kotlin-compiler-testing") {
-            name = "GitHubPackages"
-            credentials(PasswordCredentials::class)
-        }
-    }
     publications.withType<MavenPublication>().configureEach {
         pom {
             name.set("hfhbd kotlin-compiler-testing")
