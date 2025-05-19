@@ -3,6 +3,7 @@ import io.github.hfhbd.kotlincompilertesting.GenerateKotlinCompilerTests
 plugins {
     kotlin("jvm")
     id("java-test-fixtures")
+    id("jvm-test-suite")
 }
 
 val annotationsRuntime = configurations.dependencyScope("annotationsRuntime")
@@ -24,22 +25,6 @@ dependencies {
     testRuntimeOnly(kotlin("annotations-jvm"))
 }
 
-tasks.test {
-    inputs.files(annotationsRuntimeClasspath, configurations.testRuntimeClasspath)
-
-    useJUnitPlatform()
-
-    systemProperty("annotationsRuntime.classpath", annotationsRuntimeClasspath.get().asPath)
-
-    // Properties required to run the internal test framework.
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
-    setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
-}
-
 val generateTests by tasks.registering(GenerateKotlinCompilerTests::class) {
     val i = layout.projectDirectory.dir("src/testFixtures/resources/testData")
     testData.set(i)
@@ -59,9 +44,28 @@ val generateTests by tasks.registering(GenerateKotlinCompilerTests::class) {
     )
 }
 
-sourceSets {
-    test {
-        java.srcDir(generateTests)
+testing.suites.named("test", JvmTestSuite::class) {
+    useKotlinTest()
+
+    sources.java.srcDir(generateTests)
+
+    targets.configureEach {
+        testTask {
+            inputs.files(annotationsRuntimeClasspath, configurations.testRuntimeClasspath)
+
+            systemProperty("annotationsRuntime.classpath", annotationsRuntimeClasspath.get().asPath)
+
+            // Properties required to run the internal test framework.
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib", "kotlin-stdlib")
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-stdlib-jdk8", "kotlin-stdlib-jdk8")
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-reflect", "kotlin-reflect")
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-test", "kotlin-test")
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-script-runtime", "kotlin-script-runtime")
+            setLibraryProperty("org.jetbrains.kotlin.test.kotlin-annotations-jvm", "kotlin-annotations-jvm")
+
+            systemProperty("idea.ignore.disabled.plugins", "true")
+            systemProperty("idea.home.path", layout.projectDirectory.asFile.absolutePath)
+        }
     }
 }
 
