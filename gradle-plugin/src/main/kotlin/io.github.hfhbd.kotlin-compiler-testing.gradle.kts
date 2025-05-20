@@ -9,7 +9,6 @@ plugins {
 val annotationsRuntime = configurations.dependencyScope("annotationsRuntime")
 val annotationsRuntimeClasspath = configurations.resolvable("annotationsRuntimeClasspath") {
     extendsFrom(annotationsRuntime.get())
-    isTransitive = false
 }
 
 dependencies {
