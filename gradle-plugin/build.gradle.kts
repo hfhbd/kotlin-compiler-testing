@@ -25,13 +25,11 @@ gradlePlugin.plugins.configureEach {
     description = "Gradle plugin to setup kotlin-compiler-tests"
 }
 
-configurations.configureEach {
-    if (isCanBeConsumed) {
-        attributes {
-            attribute(
-                GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
-                objects.named(GradleVersion.version("9.0").version)
-            )
-        }
+configurations.runtimeElements {
+    attributes {
+        attribute(
+            GradlePluginApiVersion.GRADLE_PLUGIN_API_VERSION_ATTRIBUTE,
+            objects.named(GradleVersion.version("9.0").version)
+        )
     }
 }
