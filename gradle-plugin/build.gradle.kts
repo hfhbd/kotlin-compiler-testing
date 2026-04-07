@@ -1,5 +1,6 @@
 plugins {
-    `kotlin-dsl`
+    id("java-gradle-plugin")
+    kotlin("jvm")
     id("publish")
 }
 
@@ -7,6 +8,10 @@ kotlin.jvmToolchain(21)
 
 dependencies {
     implementation(libs.plugins.kotlin.jvm.dep)
+}
+
+tasks.validatePlugins {
+    enableStricterValidation.set(true)
 }
 
 val Provider<PluginDependency>.dep: Provider<String> get() = map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }
@@ -20,7 +25,9 @@ testing.suites.withType<JvmTestSuite>().configureEach {
     useKotlinTest()
 }
 
-gradlePlugin.plugins.configureEach {
+gradlePlugin.plugins.register("io.github.hfhbd.kotlin-compiler-testing") {
+    id = name
+    implementationClass = "io.github.hfhbd.kotlincompilertesting.TestingPlugin"
     displayName = "Gradle plugin to setup kotlin-compiler-tests"
     description = "Gradle plugin to setup kotlin-compiler-tests"
 }

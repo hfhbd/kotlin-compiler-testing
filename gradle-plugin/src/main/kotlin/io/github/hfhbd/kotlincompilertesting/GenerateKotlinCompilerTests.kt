@@ -1,6 +1,7 @@
 package io.github.hfhbd.kotlincompilertesting
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.OutputDirectory
@@ -9,6 +10,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SkipWhenEmpty
 import org.gradle.work.NormalizeLineEndings
 
+@CacheableTask
 abstract class GenerateKotlinCompilerTests : JavaExec() {
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)

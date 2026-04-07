@@ -1,6 +1,7 @@
 [versions]
-kotlin = "2.2.21"
+kotlin = "2.3.20"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 mavencentral = { id = "io.github.hfhbd.mavencentral", version = "0.0.23" }
+sigstore = { id = "dev.sigstore.sign", version = "2.0.0" }

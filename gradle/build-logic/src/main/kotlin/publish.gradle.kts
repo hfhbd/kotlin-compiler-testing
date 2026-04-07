@@ -2,6 +2,7 @@ plugins {
     id("maven-publish")
     id("signing")
     id("io.github.hfhbd.mavencentral")
+    id("dev.sigstore.sign")
 }
 
 publishing {
@@ -29,12 +30,11 @@ publishing {
                 url.set("https://github.com/hfhbd/kotlin-compiler-testing")
             }
 
-            // https://github.com/gradle/gradle/issues/28759
-            this.withXml {
-                this.asNode().appendNode("distributionManagement").appendNode("repository").apply {
-                    this.appendNode("id", "github")
-                    this.appendNode("name", "GitHub hfhbd Apache Maven Packages")
-                    this.appendNode("url", "https://maven.pkg.github.com/hfhbd/kotlin-compiler-testing")
+            distributionManagement {
+                repository {
+                    id = "github"
+                    name = "GitHub hfhbd Apache Maven Packages"
+                    url = "https://maven.pkg.github.com/hfhbd/kotlin-compiler-testing"
                 }
             }
         }
@@ -42,16 +42,10 @@ publishing {
 }
 
 signing {
-    val signingKey = providers.gradleProperty("signingKey")
-    if (signingKey.isPresent) {
-        useInMemoryPgpKeys(signingKey.get(), providers.gradleProperty("signingPassword").get())
-        sign(publishing.publications)
-    }
-}
-
-tasks.withType<AbstractArchiveTask>().configureEach {
-    isPreserveFileTimestamps = false
-    isReproducibleFileOrder = true
-    filePermissions {}
-    dirPermissions {}
+    useInMemoryPgpKeys(
+        providers.gradleProperty("signingKey").orNull,
+        providers.gradleProperty("signingPassword").orNull,
+    )
+    isRequired = providers.gradleProperty("signingKey").isPresent
+    sign(publishing.publications)
 }
