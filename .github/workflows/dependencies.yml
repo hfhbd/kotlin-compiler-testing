@@ -15,6 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: gradle/actions/dependency-submission@v6
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+          build-scan-terms-of-use-agree: 'yes'
 
       - uses: actions/dependency-review-action@v4
         if: github.event_name == 'pull_request'
