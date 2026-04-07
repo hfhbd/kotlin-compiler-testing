@@ -2,32 +2,36 @@ name: Release
 
 on:
   release:
-    types: [ created ]
+    types:  [ created ]
 
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
-  publish:
+  publishMavenCentral:
     runs-on: ubuntu-24.04-arm
     permissions:
       contents: read
-      packages: write
       id-token: write
-      attestations: write
 
-    environment: CD
+    environment:
+      name: CD
+      deployment: false
 
     steps:
       - name: Set environment for version
-        run: long="${{ github.ref }}"; version=${long#"refs/tags/v"}; echo "version=${version}" >> $GITHUB_OUTPUT
+        uses: hfhbd/actions/setup-version@d782b0962c65733283de8488b55e37164a98c572 # main
         id: version
-      - uses: actions/checkout@v6
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+        with:
+          build-scan-publish: true
+          build-scan-terms-of-use-url: 'https://gradle.com/terms-of-service'
+          build-scan-terms-of-use-agree: 'yes'
 
       - name: Release maven artifacts
-        run: ./gradlew publish -Pversion=${{ steps.version.outputs.version }}
+        run: ./gradlew publishToMavenCentral -Pversion=${{ steps.version.outputs.version }}
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}

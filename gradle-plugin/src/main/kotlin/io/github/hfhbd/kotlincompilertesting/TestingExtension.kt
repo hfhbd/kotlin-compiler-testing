@@ -19,7 +19,4 @@ interface TestingExtension {
 
 interface TestingDependencies : Dependencies {
     val annotation: DependencyCollector
-    val testCompiler: DependencyCollector
-
-    fun kotlin(version: String) = dependencyFactory.create("$GROUP:kotlin:$VERSION")
 }
