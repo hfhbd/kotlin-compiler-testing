@@ -12,8 +12,9 @@ plugins {
 
 kotlinTesting {
   mainClass = "app.softwork.validation.plugin.kotlin.GenerateTestsKt" // the custom entrypoint for your tests
+
   dependencies {
-  annotation(projects.runtime)
+    annotation(projects.runtime)
   }
 }
 ```
